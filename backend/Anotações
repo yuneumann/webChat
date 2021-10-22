@@ -1,0 +1,32 @@
+NPMS:::
+
+npm install express //isntala Express
+npm install -D @types/express typescript ts-node-dev //instala dependencias
+npm install -g typescript //instala typescript
+npm install prisma --save-dev //instala o Prisma
+npm install dotenv //instalar complementos dotenv
+npm install axios
+npm install @types/axios -D  //instala axios e tipagens
+npm instal jsonwebtoken
+npm install @types/jsonwebtoken -D //instala jsonwebtoken e tipagens
+npm install socket.io
+npm install @types/socket.io -D
+npm install cors
+npm install @types/cors
+
+--vite
+
+npm init vite@latest web -- --template react.ts
+
+RUNS:::
+
+npm init --y //cria package.json
+npm run dev //roda o sistema
+npx prisma init //cria arquivos prisma
+npx prisma migrate dev //cria db
+
+INSTALL:::
+
+NODE.JS
+INSOMNIA
+

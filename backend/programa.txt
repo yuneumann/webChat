@@ -1,0 +1,156 @@
+PS: 
+
+mkdir aplicativo
+cd aplicativo //cria a pasta e abre no PS
+
+npm init --y //cria arquivo package.json
+npm install express //isntala Express
+npm install -D @types/express typescript ts-node-dev //instala dependencias
+
+//*Criar pasta src, e dentro da pasta, arquivo app.ts
+
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine //Necessário para ativar scripts no PS
+
+npm install -g typescript //instala typescript
+tsc --init //cria arquivo tsconfig.json
+
+//arquivo tsconfig.json=
+	"compilerOptions": 
+  	{
+    	"target": "es2017", 
+    	"module": "commonjs",          
+    	"esModuleInterop": true, 
+    	"forceConsistentCasingInFileNames": true,
+    	"strict": false,
+    	"skipLibCheck": true 
+//app.ts =
+	import express from "express";
+	const app = express();
+	app.listen (400, ()=>console.log('Rodando na porta 4000'));
+//package.json=
+	"scripts": {
+        "dev": "ts-node-dev src/app.ts",
+
+
+PS: 
+
+npm run dev //verificar se a aplicação está rodando
+
+npm install prisma --save-dev //instala o Prisma
+
+npx prisma init //cria arquivos do Prisma
+
+//env
+	**apagar tudo
+//schema.prisma
+	datasource db {
+  	provider = "sqlite"
+  	url      = env("file:./dev.db")
+	}
+
+https://github.com/settings/applications/new:
+	NLW bootcamp
+	http://localhost:4000
+	http://localhost:4000/signin/callback
+
+**generate new client secret (OBS: Copiar a chave, antes de dar reload na pagina
+
+//.env (OBS: Substituir com as chaves geradas no github
+	GITHUB_CLIENT_SECRET =957c6ee9935d9ddb2aa46e4a00d168876442ea46
+	GITHUB_CLIENT_ID     =e4488e91170bbaffcc1d
+
+PS:
+
+npm install dotenv //instalar complementos dotenv
+
+//app.ts
+	app.get("/github", (request, response) =>{
+    	response.redirect(`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}`)
+	}); //direciona para autenticação do github
+	app.get("/signin/callback", (request, response) =>{
+    	const{code} = request.query;
+    	return response.json(code);
+	}); //retorna codigo do callback
+
+**http://localhost:4000/github //testar a solicitação de autenticação
+
+// pegar código de callback do link após autenticação. EX: http://localhost:4000/signin/callback?code=dad827031d6c19ae36d2
+
+
+PS:
+npm install axios
+npm install @types/axios -D  //instala axios e tipagens
+npm instal jsonwebtoken
+npm install @types/jsonwebtoken -D //instala jsonwebtoken e tipagens
+
+
+**criar pasta controllers, criar arquivo AuthenticateUserController
+import{Request, Response} from "express";
+import { AuthenticateUserService } from "../services/AuthenticateUserService";
+class AuthenticateUserController{
+    async handle(request: Request, response: Response){
+        const {code} = request.body;
+        const service = new AuthenticateUserService();
+        const result = await service.execute(code);
+        return response.json(result);
+    }
+}
+
+export {AuthenticateUserController}
+
+
+**criar pasta services, criar aquivo AuthenticateUserServices
+class AuthenticateUserService{
+    async execute(code: string){
+        const url ="https://github.com/login/oauth/access_token";
+
+        const response = await axios.post(url,null,{
+            params: {
+                client_id: process.env.GITHUB_CLIENT_ID,
+                client_secret: process.env.GITHUB_CLIENT_SECRET,
+                code
+            },
+            headers:{
+                "Accept": "application/json"
+            }
+        })
+        return response.data;
+    }
+}
+export {AuthenticateUserService}
+
+
+**INSOMNIA:
+Criar nova collection,
+enviroment:
+	{
+	"baseURL": "http://localhost:4000"
+	}
+Acessar http://localhost:4000/github, pegar o code de callback
+New request insomnia, metodo post, JSON:
+	{
+		"code": "50111d48c744a3b38918"
+	}
+	Retornar acess_token
+
+
+
+//schema.prisma:
+model User{
+  id String @id @default(uuid())
+  name String
+  github_id Int
+  avatar_url String
+  login String
+
+  @@map("users")
+}
+
+PS(Adm): 
+npx prisma migrate dev
+create_user
+
+npm install socket.io
+npm install @types/socket.io -D
+npm install cors
+npm install @types/cors
